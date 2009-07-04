@@ -1,1 +1,1 @@
-# Remote-controller
+module RemoteController end

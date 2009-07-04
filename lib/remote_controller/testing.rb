@@ -1,0 +1,3 @@
+module RemoteController::Testing
+  
+end

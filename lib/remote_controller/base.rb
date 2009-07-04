@@ -1,0 +1,3 @@
+class RemoteController::Base
+  
+end

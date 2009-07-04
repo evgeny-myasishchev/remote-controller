@@ -1,1 +1,1 @@
-# Include hook code here
+require 'remote_controller' unless defined?(RemoteController)
