@@ -1,8 +1,17 @@
-require 'test_helper'
+require  File.dirname(__FILE__) + '/test_helper'
 
-class Remote-controllerTest < ActiveSupport::TestCase
-  # Replace this with your real tests.
-  test "the truth" do
-    assert true
+class RemoteControllerTest < ActiveSupport::TestCase
+  
+  def setup
+    @context = RemoteController::Testing::HttpContext.new(3000)
   end
+  
+  def test_something
+    @context.start do |request, response|
+      puts request
+      puts response
+    end
+    @context.wait
+  end
+  
 end
