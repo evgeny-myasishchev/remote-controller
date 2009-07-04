@@ -2,13 +2,14 @@ require 'webrick'
 include WEBrick
 
 class RemoteController::Testing::HttpContext
-  WAIT_TIMEOUT = 5
+  WAIT_TIMEOUT = 0 #Works with no timeout :)
   
   def initialize(port)
     @port = port
     
     @monitor = Monitor.new
-    @cond = @monitor.new_cond
+    @completed_cond = @monitor.new_cond
+    @started_cond = @monitor.new_cond
     
     @completed = false
     @error = nil
@@ -18,8 +19,9 @@ class RemoteController::Testing::HttpContext
     @completed = false
     @error = nil
     
+    #Starting separate thread for the server
     @main = Thread.start do
-      @server = HTTPServer.new( :Port => @port )
+      @server = HTTPServer.new( :Port => @port, :Logger => Log.new(nil, BasicLog::ERROR), :AccessLog => [])
       @server.mount_proc("/", nil) do |request, response|
         begin
           yield(request, response)
@@ -29,16 +31,26 @@ class RemoteController::Testing::HttpContext
         
         @completed = true
         @monitor.synchronize do
-          @cond.signal
+          @completed_cond.signal
         end
       end
+      
+      # @monitor.synchronize do
+      #   @started_cond.signal
+      # end
+      
       @server.start
+    end
+    
+    #Waiting for server to start
+    @monitor.synchronize do
+      @started_cond.wait(WAIT_TIMEOUT)
     end
   end
   
   def wait
     @monitor.synchronize do
-      @cond.wait(WAIT_TIMEOUT)
+      @completed_cond.wait(WAIT_TIMEOUT)
     end
     raise "HTTP Connection was not completed within #{WAIT_TIMEOUT} seconds" unless @completed
     raise @error if @error

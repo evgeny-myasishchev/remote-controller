@@ -1,53 +1,51 @@
 require  File.dirname(__FILE__) + '/test_helper'
 
+require "remote_controller"
+
 class RemoteControllerTest < ActiveSupport::TestCase
   
-  SERVER_PORT = 4982
+  BASE_SERVER_PORT = 4982
   
   def setup
-    @context = RemoteController::Testing::HttpContext.new(SERVER_PORT)
+    @server_port = BASE_SERVER_PORT + rand(100)
+    @context = RemoteController::Testing::HttpContext.new(@server_port)
+    @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")
   end
   
-  def test_arguments_parsing
-    controller = RemoteController::Base.new("http://localhost:#{SERVER_PORT}/test_controller")
-    instance = self
-    
-    controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
-      instance.assert_equal "no_args_get", action_name
-      instance.assert_equal :get, method
-      instance.assert_equal 0, parameters.size
+  def test_invoke_no_args_get
+    @context.start do |request, response|
+      assert_equal "GET", request.request_method
+      assert_equal "/test_controller/no_args_get", request.path
     end
-    controller.no_args_get
-    
-    controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
-      instance.assert_equal "no_args_post", action_name
-      instance.assert_equal :post, method
-      instance.assert_equal 0, parameters.size
+    @controller.no_args_get
+    @context.wait
+  end
+  
+  def test_invoke_args_get
+    @context.start do |request, response|
+      assert_equal "GET", request.request_method
+      assert_equal "/test_controller/args_get?arg1=value1&arg2=value2", request.path + "?" + request.query_string
     end
-    controller.no_args_post(:post)
-
-    controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
-      instance.assert_equal "post_with_args", action_name
-      instance.assert_equal :post, method
-      instance.assert_equal({:id => 10}, parameters)
+    @controller.args_get(:arg1 => "value1", :arg2 => "value2")
+    @context.wait
+  end  
+  
+  def test_invoke_no_args_post
+    @context.start do |request, response|
+      assert_equal "POST", request.request_method
+      assert_equal "/test_controller/no_args_post", request.path
     end
-    controller.post_with_args(:post, {:id => 10})
-    
-    controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
-      instance.assert_equal "get_with_args", action_name
-      instance.assert_equal :get, method
-      instance.assert_equal({:id => 10}, parameters)
+    @controller.no_args_post(:post)
+    @context.wait
+  end  
+  
+  def test_invoke_args_post
+    @context.start do |request, response|
+      assert_equal "POST", request.request_method
+      assert_equal ({:arg1 => "value1", :arg2 => "value2"}.to_param), request.body
     end
-    #Default method is get
-    controller.get_with_args({:id => 10})    
-    
-    assert_raise RemoteController::Base::RemoteControllerError do
-      controller.invalid_args_action("invalid arg")
-    end
-    
-    assert_raise RemoteController::Base::RemoteControllerError do
-      controller.invalid_args_action(:get, "invalid arg")
-    end
+    @controller.args_post(:post, {:arg1 => "value1", :arg2 => "value2"})
+    @context.wait
   end
   
 end

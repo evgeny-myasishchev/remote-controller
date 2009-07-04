@@ -1,3 +1,5 @@
+require 'net/http'
+
 class RemoteController::Base
   
   class RemoteControllerError < StandardError #:nodoc:
@@ -31,5 +33,24 @@ class RemoteController::Base
   private
     def send_request(action_name, method, parameters)
       
+      uri = URI.parse(@url)
+      action_path = "#{uri.path}/#{action_name}"
+      
+      request = nil
+      
+      case method
+      when :get
+        request = Net::HTTP::Get.new("#{action_path}?#{parameters.to_param}")
+      when :post
+        request = Net::HTTP::Post.new(action_path)
+        request.body = parameters.to_param
+      else
+        raise RemoteControllerError.new("Unsupported method")
+      end
+      
+      response = Net::HTTP.start(uri.host, uri.port) {|http|
+            http.request(request)
+      }
+      response.body  
     end
 end
