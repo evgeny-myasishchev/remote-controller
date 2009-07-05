@@ -10,6 +10,32 @@ class RemoteControllerTest < Test::Unit::TestCase
     @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")
   end
   
+  # def test_integration
+  #   sessions = RemoteController::Base.new("http://localhost:3000/integration/sessions")
+  #   authenticity_token = sessions.new
+  #   sessions.create(:login => "admin", :password => "password")
+  #   
+  #   layouts = RemoteController::Base.new("http://localhost:3000/integration/layouts")
+  #   layouts.cookies_container = sessions.cookies_container
+  #   puts layouts.index
+  #   
+  #   resources = RemoteController::Base.new("http://localhost:3000/integration/resources")
+  #   resources.cookies_container = sessions.cookies_container
+  #   
+  #   puts "-----------files before------------"
+  #   resources.index
+  #   
+  #   # Adding new files
+  #   puts resources.create(:multipart, {
+  #     :authenticity_token => authenticity_token,
+  #     "record[path]" => "/images",
+  #     "record[name]" => RemoteController.file_part("/Users/jenya/projects/xtms-app/public/favicon.ico", "image/jpeg")
+  #   })
+  #   
+  #   puts "-----------files after------------"
+  #   puts resources.index
+  # end
+  
   def test_invoke_no_args_get
     @context.start do |request, response|
       assert_equal "GET", request.request_method
