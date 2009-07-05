@@ -1,6 +1,6 @@
 require  File.dirname(__FILE__) + '/test_helper'
 
-class RemoteControllerActionArgsTest < ActiveSupport::TestCase
+class RemoteControllerActionArgsTest < Test::Unit::TestCase
   
   def setup
     @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")

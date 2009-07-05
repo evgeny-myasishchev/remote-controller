@@ -1,8 +1,6 @@
 require  File.dirname(__FILE__) + '/test_helper'
 
-require "remote_controller"
-
-class RemoteControllerTest < ActiveSupport::TestCase
+class RemoteControllerTest < Test::Unit::TestCase
   
   BASE_SERVER_PORT = 4982
   

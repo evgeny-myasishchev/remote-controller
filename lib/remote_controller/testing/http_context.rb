@@ -1,4 +1,5 @@
 require 'webrick'
+require 'monitor'
 include WEBrick
 
 class RemoteController::Testing::HttpContext
