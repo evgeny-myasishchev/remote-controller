@@ -18,7 +18,7 @@ class RemoteController::Base
     
     #Processing arguments
     if args.length > 0
-      method = args.shift if([:get, :post].include?(args[0]))
+      method = args.shift if([:get, :post, :multipart].include?(args[0]))
     end
     if args.length > 1 || (args.length == 1 && !args[0].is_a?(Hash))
       raise RemoteControllerError.new("Invalid arguments.")
@@ -44,6 +44,8 @@ class RemoteController::Base
       when :post
         request = Net::HTTP::Post.new(action_path)
         request.body = parameters.to_param
+      when :multipart
+        request = Net::HTTP::Post::Multipart.new(action_path, parameters)
       else
         raise RemoteControllerError.new("Unsupported method")
       end

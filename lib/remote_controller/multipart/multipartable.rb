@@ -27,7 +27,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 module RemoteController::Multipart::Multipartable
-  DEFAULT_BOUNDARY = "-----------RubyMultipartPost"
+  DEFAULT_BOUNDARY = "-----------1a5ef2de8917334afe03269e42657dea596c90fb"
   def initialize(path, params, headers={}, boundary = DEFAULT_BOUNDARY)
     super(path, headers)
     parts = params.map {|k,v| RemoteController::Multipart::Parts::Part.new(boundary, k, v)}

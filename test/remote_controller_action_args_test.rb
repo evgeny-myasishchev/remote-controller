@@ -40,6 +40,13 @@ class RemoteControllerActionArgsTest < Test::Unit::TestCase
     @controller.post_with_args(:post, {:id => 10})
     
     @controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
+      instance.assert_equal "multipart_with_args", action_name
+      instance.assert_equal :multipart, method
+      instance.assert_equal({:id => 10}, parameters)
+    end
+    @controller.multipart_with_args(:multipart, {:id => 10})    
+    
+    @controller.class.send(:define_method, :send_request) do |action_name, method, parameters|
       instance.assert_equal "get_with_args", action_name
       instance.assert_equal :get, method
       instance.assert_equal({:id => 10}, parameters)
