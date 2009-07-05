@@ -55,4 +55,24 @@ class RemoteControllerTest < Test::Unit::TestCase
     @context.wait
   end  
   
+  def test_cookies_container
+    @context.start do |request, response|
+      response["set-cookie"] = "_session=9999; path=/; HttpOnly"
+    end
+    @controller.action
+    @context.wait
+    
+    assert_equal "9999", @controller.cookies_container["_session"].value
+    
+    container = @controller.cookies_container
+    
+    @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")
+    @controller.cookies_container = container
+    @context.start do |request, response|
+      assert_equal 1, request.cookies.length
+      assert_equal "_session=9999;", request.cookies[0].to_s
+    end
+    @controller.action
+    @context.wait
+  end
 end

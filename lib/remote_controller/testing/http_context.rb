@@ -53,6 +53,9 @@ class RemoteController::Testing::HttpContext
     @monitor.synchronize do
       @completed_cond.wait(WAIT_TIMEOUT)
     end
+    
+    @server.shutdown
+    
     raise "HTTP Connection was not completed within #{WAIT_TIMEOUT} seconds" unless @completed
     raise @error if @error
   end

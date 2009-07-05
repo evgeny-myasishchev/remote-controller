@@ -9,6 +9,14 @@ class RemoteController::Base
     @url = url
   end
   
+  def cookies_container
+    @cookies_container = @cookies_container || RemoteController::CookiesContainer.new
+  end
+  
+  def cookies_container=(container)
+    @cookies_container = container
+  end
+  
   def method_missing(symbol, *args)
     
     #Following stuff is required to send requests to remote controllers
@@ -49,10 +57,22 @@ class RemoteController::Base
       else
         raise RemoteControllerError.new("Unsupported method")
       end
-      
+      initialize_request(request)
       response = Net::HTTP.start(uri.host, uri.port) {|http|
             http.request(request)
       }
+      process_headers(response)
       response.body  
+    end
+    
+    def initialize_request(request)
+      request["cookie"] = cookies_container.to_header unless cookies_container.empty?
+    end
+    
+    def process_headers(response)
+      cookies = response["set-cookie"]
+      if(cookies)
+        cookies_container.process(cookies)
+      end
     end
 end
