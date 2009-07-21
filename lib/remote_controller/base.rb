@@ -28,9 +28,9 @@ class RemoteController::Base
     if args.length > 0
       method = args.shift if([:get, :post, :multipart].include?(args[0]))
     end
-    if args.length > 1 || (args.length == 1 && !args[0].is_a?(Hash))
+    if args.length > 1
       raise RemoteControllerError.new("Invalid arguments.")
-    elsif args.length == 1
+    elsif args.length == 1  && (args[0].is_a?(Hash) || args[0].is_a?(String))
       parameters = args.shift
     end
     

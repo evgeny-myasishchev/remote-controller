@@ -72,6 +72,15 @@ class RemoteControllerTest < Test::Unit::TestCase
     @context.wait
   end
   
+  def test_invoke_string_post
+    @context.start do |request, response|
+      assert_equal "POST", request.request_method
+      assert_equal "string post", request.body
+    end
+    @controller.args_post(:post, "string post")
+    @context.wait
+  end  
+  
   def test_invoke_args_multipart
     @context.start do |request, response|
       assert_equal "POST", request.request_method
