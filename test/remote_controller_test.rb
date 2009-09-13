@@ -36,14 +36,14 @@ class RemoteControllerTest < Test::Unit::TestCase
   #   puts resources.index
   # end
   
-  def test_unescape_response
+  def test_no_auto_unescape_response
     expected = "String with spaces and some symbols that to be escaped &= <>>><<>><<>"
     @context.start do |request, response|
       response.body = CGI.escape(expected)
     end
     actual = @controller.some_post(:post)
     @context.wait
-    assert_equal(expected, actual)
+    assert_equal(CGI.escape(expected), actual)
   end
   
   def test_invoke_no_args_get
