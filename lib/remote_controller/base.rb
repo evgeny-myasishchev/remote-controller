@@ -62,7 +62,7 @@ class RemoteController::Base
             http.request(request)
       }
       process_headers(response)
-      response.body  
+      CGI.unescape(response.body)
     end
     
     def initialize_request(request)
