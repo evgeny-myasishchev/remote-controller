@@ -40,9 +40,14 @@ class RemoteControllerMultiPartTest < Test::Unit::TestCase
       self.content_type = type + params.map{|k,v|"; #{k}=#{v}"}.join('')
     end
   end
+  
+  def setup
+    @another_temp_file = "#{Rails.root}/tmp/temp_file.txt"
+  end
 
   def teardown
     File.delete(TEMP_FILE) rescue nil
+    File.delete(@another_temp_file) rescue nil
   end
 
   def test_form_multipart_body
@@ -51,6 +56,12 @@ class RemoteControllerMultiPartTest < Test::Unit::TestCase
     UploadIO.convert! @io, "text/plain", TEMP_FILE, TEMP_FILE
     assert_results Net::HTTP::Post::Multipart.new("/foo/bar", :foo => 'bar', :file => @io)
   end
+  def test_form_multipart_body_no_text_plain
+    File.open(@another_temp_file, "w") {|f| f << "1234567890"}
+    @io = File.open(@another_temp_file)
+    UploadIO.convert! @io, "application/octet-stream", File.basename(@another_temp_file), File.basename(@another_temp_file)    
+    file_part = RemoteController::Multipart::Parts::FilePart.new("--bound", "name", @io)
+  end  
   def test_form_multipart_body_put
     File.open(TEMP_FILE, "w") {|f| f << "1234567890"}
     @io = File.open(TEMP_FILE)
