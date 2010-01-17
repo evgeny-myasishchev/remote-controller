@@ -17,16 +17,4 @@ class RemoteControllerErrorHandlingTest < Test::Unit::TestCase
     @context.wait
   end
   
-  # def test_exception_raised
-  #   @context.start do |request, response|
-  #     response.status = 500
-  #   end
-  #   begin
-  #     @controller.just_get
-  #   rescue
-  #     puts $!.response
-  #   end
-  #   @context.wait
-  # end
-  
 end
