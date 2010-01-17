@@ -62,6 +62,7 @@ class RemoteController::Base
             http.request(request)
       }
       process_headers(response)
+      response.value #Will raise error in case response is not 2xx
       response.body
     end
     
