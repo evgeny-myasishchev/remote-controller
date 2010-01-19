@@ -17,4 +17,23 @@ class RemoteControllerErrorHandlingTest < Test::Unit::TestCase
     @context.wait
   end
   
+  def test_callback_invoked
+    first_invoked  = false
+    second_invoked = false
+    @controller.on_error do |error|
+      first_invoked = true
+    end
+    @controller.on_error do |error|
+      second_invoked = true
+    end
+    @context.start do |request, response|
+      response.status = 500
+    end
+    assert_raise(Net::HTTPFatalError) { @controller.just_get }
+    @context.wait
+    
+    assert(first_invoked, "First was not invoked")
+    assert(second_invoked, "Second was not invoked")
+  end  
+  
 end

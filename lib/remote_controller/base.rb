@@ -7,6 +7,7 @@ class RemoteController::Base
   
   def initialize(url)
     @url = url
+    @error_handlers = []
   end
   
   def cookies_container
@@ -15,6 +16,11 @@ class RemoteController::Base
   
   def cookies_container=(container)
     @cookies_container = container
+  end
+  
+  def on_error(&block)
+    raise "No block given" unless block_given?
+    @error_handlers << block
   end
   
   def method_missing(symbol, *args)
@@ -62,7 +68,12 @@ class RemoteController::Base
             http.request(request)
       }
       process_headers(response)
-      response.value #Will raise error in case response is not 2xx
+      begin
+        response.value #Will raise error in case response is not 2xx
+      rescue
+        @error_handlers.each { |e| e.call($!) }
+        raise $!
+      end
       response.body
     end
     
