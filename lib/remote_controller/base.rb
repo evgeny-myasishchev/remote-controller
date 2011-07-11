@@ -1,6 +1,7 @@
 require 'net/http'
 
 class RemoteController::Base
+  include RemoteController::CGIHelpers
   
   class RemoteControllerError < StandardError #:nodoc:
   end
@@ -54,10 +55,10 @@ class RemoteController::Base
       
       case method
       when :get
-        request = Net::HTTP::Get.new("#{action_path}?#{parameters.to_param}")
+        request = Net::HTTP::Get.new("#{action_path}?#{to_param(parameters)}")
       when :post
         request = Net::HTTP::Post.new(action_path)
-        request.body = parameters.to_param
+        request.body = to_param(parameters)
       when :multipart
         request = Net::HTTP::Post::Multipart.new(action_path, parameters)
       else

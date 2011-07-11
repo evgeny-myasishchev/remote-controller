@@ -10,32 +10,6 @@ class RemoteControllerTest < Test::Unit::TestCase
     @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")
   end
   
-  # def test_integration
-  #   sessions = RemoteController::Base.new("http://localhost:3000/integration/sessions")
-  #   authenticity_token = sessions.new
-  #   sessions.create(:login => "admin", :password => "password")
-  #   
-  #   layouts = RemoteController::Base.new("http://localhost:3000/integration/layouts")
-  #   layouts.cookies_container = sessions.cookies_container
-  #   puts layouts.index
-  #   
-  #   resources = RemoteController::Base.new("http://localhost:3000/integration/resources")
-  #   resources.cookies_container = sessions.cookies_container
-  #   
-  #   puts "-----------files before------------"
-  #   resources.index
-  #   
-  #   # Adding new files
-  #   puts resources.create(:multipart, {
-  #     :authenticity_token => authenticity_token,
-  #     "record[path]" => "/images",
-  #     "record[name]" => RemoteController.file_part("/Users/jenya/projects/xtms-app/public/favicon.ico", "image/jpeg")
-  #   })
-  #   
-  #   puts "-----------files after------------"
-  #   puts resources.index
-  # end
-  
   def test_no_auto_unescape_response
     expected = "String with spaces and some symbols that to be escaped &= <>>><<>><<>"
     @context.start do |request, response|
@@ -76,7 +50,7 @@ class RemoteControllerTest < Test::Unit::TestCase
   def test_invoke_args_post
     @context.start do |request, response|
       assert_equal "POST", request.request_method
-      assert_equal ({:arg1 => "value1", :arg2 => "value2"}.to_param), request.body
+      assert_equal to_param({:arg1 => "value1", :arg2 => "value2"}), request.body
     end
     @controller.args_post(:post, {:arg1 => "value1", :arg2 => "value2"})
     @context.wait
@@ -85,9 +59,9 @@ class RemoteControllerTest < Test::Unit::TestCase
   def test_invoke_string_post
     @context.start do |request, response|
       assert_equal "POST", request.request_method
-      assert_equal "string post", request.body
+      assert_equal "string_post", request.body
     end
-    @controller.args_post(:post, "string post")
+    @controller.args_post(:post, "string_post")
     @context.wait
   end  
   

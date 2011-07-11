@@ -42,7 +42,7 @@ class RemoteControllerMultiPartTest < Test::Unit::TestCase
   end
   
   def setup
-    @another_temp_file = "#{Rails.root}/tmp/temp_file.txt"
+    @another_temp_file = "#{File.dirname(__FILE__)}/../tmp/temp_file.txt"
   end
 
   def teardown
