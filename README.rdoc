@@ -1,44 +1,41 @@
 = Remote-controller
-
 Library to simplify remote controller actions invocation.
 
 == Features
-
 Can invoke actions of remote controllers. Can send any data including files. Does not supports REST like controllers yet.
 
 === Supported HTTP methods
-
 * GET
 * POST
 * Multipart POST
 
 == Example
 
-	#Reusable cookies container to persist cookies between different remote controllers of the same remote application
-	cookies_container = RemoteController::CookiesContainer.new
-
-	#Sessions controller is bound to 'http://my-application.com/sessions' url
-	sessions                   = RemoteController::Base.new('http://my-application.com/sessions')
-	sessions.cookies_container = cookies_container
-
-	# GET: http://my-application.com/sessions/authenticity_token
-	# Response is string containing authenticity token. It will also start a new session. 
-	# CookiesContainer will hold session cookies (and all other cookies) automatically
-	authenticity_token = sessions.authenticity_token
-
-	# POST http://my-application.com/sessions/authorize
-	# POST body: 
-	# => authenticity_token=authenticity+token&login=admin&password=password
-	# => in case response is not 200 then exception is thrown
-	sessions.authorize(:post, :authenticity_token => authenticity_token, :login => "admin", :password => "password")
-
-	#Reports controller is bound to 'http://my-application.com/reports'
-	reports                    = RemoteController::Base.new('http://my-application.com/reports')
-	sessions.cookies_container = cookies_container #Reusing cookies container to preserve the same session...
-
-	# POST http://my-application.com/sessions/create
-	# POST body is in multipart POST form. It has two parts: 
-	# => name = New report
-	# => attachment = sample1.txt file
-	attachment = RemoteController.file_part(File.expand_path("../sample1.txt", __FILE__), "text/plain")
-	reports.create(:multipart, :name => "New report", :attachment => attachment)
+  #Reusable cookies container to persist cookies between different remote controllers of the same remote application
+  cookies_container = RemoteController::CookiesContainer.new
+  
+  #Sessions controller is bound to 'http://my-application.com/sessions' url
+  sessions                   = RemoteController::Base.new('http://my-application.com/sessions')
+  sessions.cookies_container = cookies_container
+  
+  # GET: http://my-application.com/sessions/authenticity_token
+  # Response is string containing authenticity token. It will also start a new session. 
+  # CookiesContainer will hold session cookies (and all other cookies) automatically
+  authenticity_token = sessions.authenticity_token
+  
+  # POST http://my-application.com/sessions/authorize
+  # POST body: 
+  # => authenticity_token=authenticity+token&login=admin&password=password
+  # => in case response is not 200 then exception is thrown
+  sessions.authorize(:post, :authenticity_token => authenticity_token, :login => "admin", :password => "password")
+  
+  #Reports controller is bound to 'http://my-application.com/reports'
+  reports                    = RemoteController::Base.new('http://my-application.com/reports')
+  sessions.cookies_container = cookies_container #Reusing cookies container to preserve the same session...
+  
+  # POST http://my-application.com/sessions/create
+  # POST body is in multipart POST form. It has two parts: 
+  # => name = New report
+  # => attachment = sample1.txt file
+  attachment = RemoteController.file_part(File.expand_path("../sample1.txt", __FILE__), "text/plain")
+  reports.create(:multipart, :name => "New report", :attachment => attachment)
