@@ -1,1 +1,0 @@
-require 'remote_controller' unless defined?(RemoteController)

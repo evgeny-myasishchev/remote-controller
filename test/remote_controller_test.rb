@@ -6,7 +6,7 @@ class RemoteControllerTest < Test::Unit::TestCase
   
   def setup
     @server_port = BASE_SERVER_PORT + rand(100)
-    @context = RemoteController::Testing::HttpContext.new(@server_port)
+    @context = HttpTesting::Context.new(@server_port)
     @controller = RemoteController::Base.new("http://localhost:#{@server_port}/test_controller")
   end
   

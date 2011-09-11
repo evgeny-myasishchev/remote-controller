@@ -1,11 +1,12 @@
+require 'rubygems'
+
+ENV['BUNDLE_GEMFILE'] = File.expand_path('../../Gemfile', __FILE__)
+require 'bundler/setup'
+
 require 'test/unit'
-
-$:.unshift File.dirname(__FILE__) + '/../lib/remote_controller'
-
-require File.dirname(__FILE__) + '/../init'
-
 require 'cgi'
-require 'testing'
+require 'http-testing'
+require 'remote_controller'
 
 class Test::Unit::TestCase
   include RemoteController::CGIHelpers
