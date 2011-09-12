@@ -31,7 +31,7 @@ Can invoke actions of remote controllers. Can send any data including files. Doe
   
   #Reports controller is bound to 'http://my-application.com/reports'
   reports                    = RemoteController::Base.new('http://my-application.com/reports')
-  sessions.cookies_container = cookies_container #Reusing cookies container to preserve the same session...
+  reports.cookies_container = cookies_container #Reusing cookies container to preserve the same session...
   
   # POST http://my-application.com/sessions/create
   # POST body is in multipart POST form. It has two parts: 
