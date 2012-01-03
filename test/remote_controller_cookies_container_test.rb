@@ -48,7 +48,9 @@ class RemoteControllerCookiesContainerTest < Test::Unit::TestCase
     cookies_str = "auth_token=tooken; path=/; expires=Thu, 01-Jan-1970 00:00:00 GMT, _session=9999; path=/; HttpOnly"
     @container.process(cookies_str)
     
-    assert_equal "_session=9999; auth_token=tooken;", @container.to_header
+    assert_equal @container["_session"].value, '9999'
+    assert_equal @container["auth_token"].value, 'tooken'
+    # assert_equal "_session=9999; auth_token=tooken;", @container.to_header
   end 
   
   def test_empty?
