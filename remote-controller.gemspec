@@ -13,6 +13,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project = 'remote-controller'
 
   s.add_development_dependency 'http-testing', '>= 0.1.3'
+  s.add_development_dependency 'rake'
 
   s.files         = `git ls-files`.split("\n")
   s.test_files    = `git ls-files -- {test}/*`.split("\n")
