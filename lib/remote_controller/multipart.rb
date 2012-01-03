@@ -40,7 +40,6 @@
 
 require 'net/http'
 require 'stringio'
-require 'cgi'
 
 module RemoteController::Multipart end
 
