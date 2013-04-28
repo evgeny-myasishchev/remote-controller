@@ -9,8 +9,9 @@ Gem::Specification.new do |s|
   s.homepage    = 'http://github.com/evgeny-myasishchev/remote-controller'
   s.summary     = %q{Helps to invoke actions of remote controllers.}
   s.description = %q{Library to simplify remote controller actions invocation.}
-
-  s.rubyforge_project = 'remote-controller'
+  
+  s.rubyforge_project     = 'remote-controller'
+  s.required_ruby_version = '>= 1.9.3'
 
   s.add_development_dependency 'http-testing', '>= 0.1.3'
   s.add_development_dependency 'rake'
