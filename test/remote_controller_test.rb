@@ -68,7 +68,7 @@ class RemoteControllerTest < Test::Unit::TestCase
   def test_invoke_args_multipart
     @context.start do |request, response|
       assert_equal "POST", request.request_method
-      assert_equal ["multipart/form-data; boundary=#{Net::HTTP::Post::Multipart::DEFAULT_BOUNDARY}"], request.header["content-type"]
+      assert_equal ["multipart/form-data; boundary=#{RemoteController::Base::DefaultMultipartBoundary}"], request.header["content-type"]
     end
     @controller.args_post(:multipart, {:arg1 => "value1", :arg2 => "value2"})
     @context.wait

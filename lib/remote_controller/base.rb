@@ -1,6 +1,8 @@
 require 'net/http'
 
 class RemoteController::Base
+  DefaultMultipartBoundary = "-----------1a5ef2de8917334afe03269e42657dea596c90fb"
+  
   include RemoteController::CGIHelpers
   
   class RemoteControllerError < StandardError #:nodoc:
@@ -67,7 +69,7 @@ class RemoteController::Base
         request = Net::HTTP::Post.new(action_path)
         request.body = to_param(parameters)
       when :multipart
-        request = Net::HTTP::Post::Multipart.new(action_path, parameters)
+        request = Net::HTTP::Post::Multipart.new(action_path, parameters, {}, DefaultMultipartBoundary)
       else
         raise RemoteControllerError.new("Unsupported method")
       end
