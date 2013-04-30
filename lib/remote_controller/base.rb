@@ -6,7 +6,15 @@ class RemoteController::Base
   class RemoteControllerError < StandardError #:nodoc:
   end
   
-  def initialize(url)
+  def initialize(url, options = {})
+    @options = {
+      verbose: false,
+      log_factory: RemoteController::DefaultLogFactory
+    }.merge options
+    
+    logger_factory = @options[:verbose] ? @options[:log_factory] : RemoteController::EmptyLoggerFactory
+    @log = logger_factory.create_logger('remote-controller')
+    
     @url = url
     @error_handlers = []
   end
@@ -50,9 +58,8 @@ class RemoteController::Base
       
       uri = URI.parse(@url)
       action_path = "#{uri.path}/#{action_name}"
-      
+      @log.info('Preparing request...')
       request = nil
-      
       case method
       when :get
         request = Net::HTTP::Get.new("#{action_path}?#{to_param(parameters)}")
@@ -65,13 +72,17 @@ class RemoteController::Base
         raise RemoteControllerError.new("Unsupported method")
       end
       initialize_request(request)
+      @log.info("Sending request. Method: #{method}, uri: #{action_path}.")
       response = Net::HTTP.start(uri.host, uri.port) {|http|
             http.request(request)
       }
+      @log.info("Processing response headers...")
       process_headers(response)
       begin
+        @log.info('Evaluating response')
         response.value #Will raise error in case response is not 2xx
       rescue
+        @log.info("Response returned error: #{$!}")
         @error_handlers.each { |e| e.call($!) }
         raise $!
       end
