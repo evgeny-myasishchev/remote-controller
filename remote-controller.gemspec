@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.rubyforge_project     = 'remote-controller'
   s.required_ruby_version = '>= 1.9.3'
 
-  s.add_development_dependency 'http-testing', '>= 0.1.3'
+  s.add_development_dependency 'http-testing', '>= 0.1.5'
   s.add_development_dependency 'rake'
   s.add_development_dependency 'rdoc'
 
