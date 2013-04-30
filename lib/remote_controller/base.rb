@@ -76,7 +76,7 @@ class RemoteController::Base
       response = Net::HTTP.start(uri.host, uri.port) {|http|
             http.request(request)
       }
-      @log.info("Processing response headers...")
+      @log.info("Response received: #{response.code} #{response.message}")
       process_headers(response)
       begin
         @log.info('Evaluating response')
